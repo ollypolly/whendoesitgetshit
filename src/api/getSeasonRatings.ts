@@ -1,11 +1,11 @@
-import { getShowDetails } from "./getShowDetails";
+import { Season, getShowDetails } from "./getShowDetails";
 
-type SeasonRatings = number[];
+type SeasonRatings = Season[];
 
-export const getSeasonRatings = async (seriesId: number) => {
+export const getSeasons = async (seriesId: number) => {
   const showDetails = await getShowDetails(seriesId);
   const seasonRatings: SeasonRatings = showDetails.seasons.map(
-    (season) => season.vote_average
+    (season) => season
   );
 
   // Remove first index

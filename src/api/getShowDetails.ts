@@ -1,7 +1,7 @@
 import axios from "axios";
 import { API_TV } from "./constants";
 
-type Season = {
+export type Season = {
   air_date: string;
   episode_count: number;
   id: number;
@@ -12,7 +12,7 @@ type Season = {
   vote_average: number;
 };
 
-type ShowDetails = {
+export type ShowDetails = {
   seasons: Season[];
 };
 
