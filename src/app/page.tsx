@@ -2,11 +2,11 @@
 
 import { Button } from "@/ui/button";
 import styles from "./page.module.css";
-import { getSeasonRatings } from "@/api";
+import { getSeasonRatings } from "@/api/getSeasonRatings";
 
 export default function Home() {
-  const handleClick = () => {
-    console.log(getSeasonRatings(615));
+  const handleClick = async () => {
+    console.log(await getSeasonRatings(615));
   };
 
   return (
