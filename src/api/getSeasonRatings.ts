@@ -7,5 +7,8 @@ export const getSeasonRatings = async (seriesId: number) => {
   const seasonRatings: SeasonRatings = showDetails.seasons.map(
     (season) => season.vote_average
   );
+
+  // Remove first index
+  seasonRatings.shift();
   return seasonRatings;
 };
