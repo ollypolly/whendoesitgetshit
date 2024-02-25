@@ -5,28 +5,24 @@
 
 import { Season } from "@/api/getShowDetails";
 
-export const getDropoff = (seasons: Season[]): number => {
+export const getDropoff = (seasons: Season[]): Season | undefined => {
   let maxDropoff = 0;
   let maxDropoffSeason = 0;
+  let hasFoundDropoff = false;
   for (let i = 0; i < seasons.length - 1; i++) {
     const currentSeason = seasons[i];
     const nextSeason = seasons[i + 1];
     const dropoff = Math.abs(
       currentSeason.vote_average - nextSeason.vote_average
     );
-    if (dropoff > maxDropoff) {
+
+    if (dropoff > maxDropoff && !hasFoundDropoff && dropoff >= 0.5) {
+      hasFoundDropoff = true;
       maxDropoff = dropoff;
-      maxDropoffSeason = currentSeason.season_number;
+      maxDropoffSeason = nextSeason.season_number;
     }
   }
 
-  // if dropoff is not the last season, add 1 to the season number
-  if (maxDropoffSeason !== seasons.length) {
-    maxDropoffSeason += 1;
-  }
-
-  return (
-    seasons.find((season) => season.season_number === maxDropoffSeason)
-      ?.season_number ?? 0
-  );
+  console.log(maxDropoffSeason, "maxDropoffSeason");
+  return seasons.find((season) => season.season_number === maxDropoffSeason);
 };
