@@ -38,6 +38,9 @@ export const getDropoff = (seasons: Season[]): Season | undefined => {
     );
   }
 
-  console.log(maxDropoffSeason, "maxDropoffSeason");
-  return seasons.find((season) => season.season_number === maxDropoffSeason);
+  const dropoffSeason = seasons.find(
+    (season) => season.season_number === maxDropoffSeason
+  );
+
+  return dropoffSeason ? dropoffSeason : undefined;
 };
