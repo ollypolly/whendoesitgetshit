@@ -1,3 +1,9 @@
-export const getTVShowRating = (seriesId: string) => {
-  return fetch(`${API_TV}/${seriesId}`);
+import axios from "axios";
+
+export const getTVShowRating = async (seriesId: string) => {
+  const showDetails = await axios
+    .get(`${API_TV}/${seriesId}`)
+    .then((response) => response);
+
+  return showDetails;
 };
