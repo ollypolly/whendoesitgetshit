@@ -1,10 +1,12 @@
+"use client";
+
 import { Button } from "@/ui/button";
 import styles from "./page.module.css";
-import { getTVShowRating } from "@/api";
+import { getSeasonRatings } from "@/api";
 
 export default function Home() {
   const handleClick = () => {
-    console.log(getTVShowRating("Breaking Bad"));
+    console.log(getSeasonRatings(615));
   };
 
   return (
