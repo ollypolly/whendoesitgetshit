@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/ui/button";
+import { Box, IconButton, Tooltip, useTheme } from "@mui/material";
 import styles from "./page.module.css";
 import { getSeasons } from "@/api/getSeasonRatings";
 import { getDropoff } from "@/lib/getDropoff";
@@ -35,6 +35,8 @@ export type ShowSearchResults = {
 };
 
 export default function Home() {
+  const theme = useTheme();
+
   const handleClick = async (show?: Show) => {
     if (!show) {
       return;
@@ -98,20 +100,43 @@ export default function Home() {
   const [searchResults, setSearchResults] = useState<Show[] | undefined>();
 
   return (
-    <main className={styles.main}>
-      <div>
-        <h1 className={styles.title}>When does it get shit?</h1>
+    <Box component="main">
+      <Box
+        component="header"
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          padding: 1,
+          marginBottom: 2,
+          borderBottom: `2px ${theme.palette.background.paper} solid`,
+        }}
+      >
+        <Box
+          sx={{ width: "100px", display: "flex", justifyContent: "center" }}
+        ></Box>
+        <Box sx={{ width: "100px", display: "flex", justifyContent: "center" }}>
+          <Tooltip title="Copy URL">
+            {/* <IconButton onClick={() => shareUrl()} sx={{ alignSelf: "center" }}>
+              <IosShareIcon />
+            </IconButton> */}
+          </Tooltip>
+        </Box>
+      </Box>
+      <h1 className={styles.title}>When does it get 💩?</h1>
 
-        {!!dropoffSeason ? (
-          <h2>
-            {show?.name} gets shit in season {dropoffSeason.season_number}
-          </h2>
-        ) : (
-          show && <h2>{show?.name} is consistent through it&rsquo;s run</h2>
-        )}
-        <Input onChange={debouncedResults} />
-      </div>
-      {renderSearchResults()}
-    </main>
+      {!!dropoffSeason ? (
+        <h2>
+          {show?.name} gets shit in season {dropoffSeason.season_number}
+        </h2>
+      ) : (
+        show && <h2>{show?.name} is consistent through it&rsquo;s run</h2>
+      )}
+      <Input
+        onChange={debouncedResults}
+        placeholder="Start typing TV Show to search..."
+      />
+
+      <Box component="section">{renderSearchResults()}</Box>
+    </Box>
   );
 }

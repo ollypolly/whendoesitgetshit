@@ -14,10 +14,7 @@ export const getDropoff = (seasons: Season[]): Season | undefined => {
   for (let i = 0; i < seasons.length - 1; i++) {
     const currentSeason = seasons[i];
     const nextSeason = seasons[i + 1];
-    const dropoff = Math.abs(
-      currentSeason.vote_average - nextSeason.vote_average
-    );
-
+    const dropoff = currentSeason.vote_average - nextSeason.vote_average;
     if (dropoff > biggestDropoff) {
       biggestDropoff = dropoff;
       biggestDropoffSeason = nextSeason.season_number;
