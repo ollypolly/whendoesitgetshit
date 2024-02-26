@@ -107,7 +107,7 @@ export default function Home() {
             {show?.name} gets shit in season {dropoffSeason.season_number}
           </h2>
         ) : (
-          show && <h2>{show?.name} is consistent through it's run</h2>
+          show && <h2>{show?.name} is consistent through it&rsquo;s run</h2>
         )}
         <Input onChange={debouncedResults} />
       </div>
