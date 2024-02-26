@@ -9,6 +9,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Season } from "@/api/getShowDetails";
 import debouce from "lodash.debounce";
 import { getSearchResults } from "@/api/getSearchResults";
+import { IosShare } from "@mui/icons-material";
 
 type Show = {
   adult: boolean;
@@ -111,18 +112,17 @@ export default function Home() {
           borderBottom: `2px ${theme.palette.background.paper} solid`,
         }}
       >
-        <Box
-          sx={{ width: "100px", display: "flex", justifyContent: "center" }}
-        ></Box>
+        <Box sx={{ width: "100px", display: "flex", justifyContent: "center" }}>
+          <h1 className={styles.title}>When does it get 💩?</h1>
+        </Box>
         <Box sx={{ width: "100px", display: "flex", justifyContent: "center" }}>
           <Tooltip title="Copy URL">
-            {/* <IconButton onClick={() => shareUrl()} sx={{ alignSelf: "center" }}>
-              <IosShareIcon />
-            </IconButton> */}
+            <IconButton sx={{ alignSelf: "center" }}>
+              <IosShare />
+            </IconButton>
           </Tooltip>
         </Box>
       </Box>
-      <h1 className={styles.title}>When does it get 💩?</h1>
 
       {!!dropoffSeason ? (
         <h2>
