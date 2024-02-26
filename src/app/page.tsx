@@ -107,7 +107,12 @@ export default function Home() {
   const [searchResults, setSearchResults] = useState<Show[] | undefined>();
 
   return (
-    <Box component="main">
+    <Box
+      component="main"
+      sx={{
+        padding: 2,
+      }}
+    >
       <Box
         component="header"
         sx={{
@@ -118,8 +123,10 @@ export default function Home() {
           borderBottom: `2px ${theme.palette.background.paper} solid`,
         }}
       >
-        <Box sx={{ width: "100px", display: "flex", justifyContent: "center" }}>
-          <Typography variant="h3">When does it get 💩?</Typography>
+        <Box sx={{ display: "flex", justifyContent: "center" }}>
+          <Typography variant="h4" fontWeight="bold">
+            When does it get 💩?
+          </Typography>
         </Box>
         <Box sx={{ width: "100px", display: "flex", justifyContent: "center" }}>
           <Tooltip title="Copy URL">
@@ -138,6 +145,9 @@ export default function Home() {
         show && <h2>{show?.name} is consistent through it&rsquo;s run</h2>
       )}
       <TextField
+        sx={{
+          width: "100%",
+        }}
         onChange={debouncedResults}
         placeholder="Start typing TV Show to search..."
       />
