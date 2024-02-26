@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  Alert,
   Box,
   Button,
   IconButton,
@@ -16,6 +17,7 @@ import { Season } from "@/api/getShowDetails";
 import debouce from "lodash.debounce";
 import { getSearchResults } from "@/api/getSearchResults";
 import { IosShare } from "@mui/icons-material";
+import { SeasonGraph } from "./components/SeasonGraph";
 
 type Show = {
   adult: boolean;
@@ -51,14 +53,20 @@ export default function Home() {
 
     setShow(show);
 
-    const seasonRatings = await getSeasons(show.id);
+    const seasons = await getSeasons(show.id);
 
-    const maxDropoffSeason = getDropoff(seasonRatings);
+    const maxDropoffSeason = getDropoff(seasons);
 
     if (maxDropoffSeason) {
       setDropoffSeason(maxDropoffSeason);
+      setSeasons(seasons);
     } else {
       setDropoffSeason(undefined);
+      if (seasons.length > 0) {
+        setSeasons(seasons);
+      } else {
+        setSeasons(undefined);
+      }
     }
   };
 
@@ -71,6 +79,7 @@ export default function Home() {
     if (searchTerm === "") {
       setDropoffSeason(undefined);
       setShow(undefined);
+      setSeasons(undefined);
     }
   };
 
@@ -105,6 +114,7 @@ export default function Home() {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [show, setShow] = useState<Show | undefined>();
   const [searchResults, setSearchResults] = useState<Show[] | undefined>();
+  const [seasons, setSeasons] = useState<Season[] | undefined>();
 
   return (
     <Box
@@ -143,6 +153,20 @@ export default function Home() {
         </h2>
       ) : (
         show && <h2>{show?.name} is consistent through it&rsquo;s run</h2>
+      )}
+
+      {!!seasons && !!show ? (
+        <SeasonGraph seasons={seasons} dropOffSeason={dropoffSeason} />
+      ) : (
+        <Box
+          sx={{
+            p: 4,
+          }}
+        >
+          <Alert variant="outlined" severity="info">
+            No season data found
+          </Alert>
+        </Box>
       )}
       <TextField
         sx={{
