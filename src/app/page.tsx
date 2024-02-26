@@ -1,10 +1,16 @@
 "use client";
 
-import { Box, IconButton, Tooltip, useTheme } from "@mui/material";
-import styles from "./page.module.css";
+import {
+  Box,
+  Button,
+  IconButton,
+  TextField,
+  Tooltip,
+  Typography,
+  useTheme,
+} from "@mui/material";
 import { getSeasons } from "@/api/getSeasonRatings";
 import { getDropoff } from "@/lib/getDropoff";
-import { Input } from "@/ui/input";
 import { useEffect, useMemo, useState } from "react";
 import { Season } from "@/api/getShowDetails";
 import debouce from "lodash.debounce";
@@ -81,8 +87,8 @@ export default function Home() {
 
   const renderSearchResults = () => {
     return searchResults?.map((show) => (
-      <button
-        style={{
+      <Button
+        sx={{
           padding: "10px",
           margin: "10px",
         }}
@@ -90,7 +96,7 @@ export default function Home() {
         key={show.id}
       >
         {show.name}
-      </button>
+      </Button>
     ));
   };
 
@@ -113,7 +119,7 @@ export default function Home() {
         }}
       >
         <Box sx={{ width: "100px", display: "flex", justifyContent: "center" }}>
-          <h1 className={styles.title}>When does it get 💩?</h1>
+          <Typography variant="h3">When does it get 💩?</Typography>
         </Box>
         <Box sx={{ width: "100px", display: "flex", justifyContent: "center" }}>
           <Tooltip title="Copy URL">
@@ -131,7 +137,7 @@ export default function Home() {
       ) : (
         show && <h2>{show?.name} is consistent through it&rsquo;s run</h2>
       )}
-      <Input
+      <TextField
         onChange={debouncedResults}
         placeholder="Start typing TV Show to search..."
       />
