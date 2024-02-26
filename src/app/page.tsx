@@ -67,6 +67,7 @@ export default function Home() {
 
   const debouncedResults = useMemo(() => {
     return debouce(handleSearch, 300);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
