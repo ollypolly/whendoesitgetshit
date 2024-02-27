@@ -1,6 +1,7 @@
 import { Season } from "@/api/getShowDetails";
-import { useState } from "react";
+import { use, useState } from "react";
 import { BarChart, Bar, Cell, ResponsiveContainer, Tooltip } from "recharts";
+import { NumberParam, useQueryParam } from "use-query-params";
 
 type SeasonGraphProps = {
   seasons: Season[];
@@ -13,8 +14,9 @@ export const SeasonGraph = ({ seasons, dropOffSeason }: SeasonGraphProps) => {
     uv: season.vote_average * 10,
   }));
 
-  const [activeIndex, setActiveIndex] = useState(
-    (dropOffSeason?.season_number ?? 0) - 1 || 0
+  const [activeIndex, setActiveIndex] = useQueryParam(
+    "activeIndex",
+    NumberParam
   );
 
   const handleClick = (data: any, index: number) => {
