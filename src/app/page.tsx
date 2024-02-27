@@ -18,6 +18,7 @@ import debouce from "lodash.debounce";
 import { getSearchResults } from "@/api/getSearchResults";
 import { IosShare } from "@mui/icons-material";
 import { SeasonGraph } from "./components/SeasonGraph";
+import { NumberParam, StringParam, useQueryParams } from "use-query-params";
 
 type Show = {
   adult: boolean;
@@ -60,8 +61,10 @@ export default function Home() {
     if (maxDropoffSeason) {
       setDropoffSeason(maxDropoffSeason);
       setSeasons(seasons);
+      setActiveIndex(maxDropoffSeason.season_number - 1);
     } else {
       setDropoffSeason(undefined);
+      setActiveIndex(undefined);
       if (seasons.length > 0) {
         setSeasons(seasons);
       } else {
@@ -70,17 +73,21 @@ export default function Home() {
     }
   };
 
-  const handleSearch = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(event.target.value);
+  const handleSearch = async (value: string) => {
+    setSearchTerm(value);
 
-    const searchResults = await getSearchResults(event.target.value);
+    const searchResults = await getSearchResults(value);
     setSearchResults(searchResults?.results);
 
     if (searchTerm === "") {
       setDropoffSeason(undefined);
       setShow(undefined);
       setSeasons(undefined);
+      setActiveIndex(undefined);
+      setSearchTerm(undefined);
     }
+
+    return searchResults;
   };
 
   const debouncedResults = useMemo(() => {
@@ -109,12 +116,62 @@ export default function Home() {
     ));
   };
 
-  const [dropoffSeason, setDropoffSeason] = useState<Season | undefined>();
-
-  const [searchTerm, setSearchTerm] = useState<string>("");
-  const [show, setShow] = useState<Show | undefined>();
   const [searchResults, setSearchResults] = useState<Show[] | undefined>();
   const [seasons, setSeasons] = useState<Season[] | undefined>();
+
+  const [query, setQuery] = useQueryParams({
+    dropoffSeasonId: NumberParam,
+    showId: NumberParam,
+    searchTerm: StringParam,
+    activeIndex: NumberParam,
+  });
+  const { dropoffSeasonId, activeIndex, searchTerm, showId } = query;
+
+  const dropOffSeason = useMemo(() => {
+    if (dropoffSeasonId && seasons) {
+      return seasons.find((season) => season.season_number === dropoffSeasonId);
+    }
+  }, [dropoffSeasonId, seasons]);
+
+  const setDropoffSeason = (season: Season | undefined) => {
+    if (season) {
+      setQuery({ dropoffSeasonId: season.season_number });
+    } else {
+      setQuery({ dropoffSeasonId: undefined });
+    }
+  };
+
+  const setSearchTerm = (term?: string) => {
+    setQuery({ searchTerm: term });
+  };
+
+  const show = useMemo(() => {
+    if (showId) {
+      return searchResults?.find((show) => show.id === showId);
+    }
+  }, [showId, searchResults]);
+
+  const setShow = (show: Show | undefined) => {
+    if (show) {
+      setQuery({ showId: show.id });
+    } else {
+      setQuery({ showId: undefined });
+    }
+  };
+
+  const setActiveIndex = (index?: number) => {
+    setQuery({ activeIndex: index });
+  };
+
+  useEffect(() => {
+    // If show is undefined then pull the seasons from the API
+    if (searchTerm && showId) {
+      handleSearch(searchTerm).then((searchResults) => {
+        handleClick(searchResults?.results.find((show) => show.id === showId));
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Box
@@ -147,16 +204,21 @@ export default function Home() {
         </Box>
       </Box>
 
-      {!!dropoffSeason ? (
+      {!!dropOffSeason ? (
         <h2>
-          {show?.name} gets shit in season {dropoffSeason.season_number}
+          {show?.name} gets shit in season {dropOffSeason.season_number}
         </h2>
       ) : (
         show && <h2>{show?.name} is consistent through it&rsquo;s run</h2>
       )}
 
       {!!seasons && !!show ? (
-        <SeasonGraph seasons={seasons} dropOffSeason={dropoffSeason} />
+        <>
+          <SeasonGraph seasons={seasons} dropOffSeason={dropOffSeason} />
+          {activeIndex !== undefined && activeIndex !== null && (
+            <Typography>Season data for Season {activeIndex + 1}</Typography>
+          )}
+        </>
       ) : (
         <Box
           sx={{
@@ -169,10 +231,11 @@ export default function Home() {
         </Box>
       )}
       <TextField
+        defaultValue={searchTerm}
         sx={{
           width: "100%",
         }}
-        onChange={debouncedResults}
+        onChange={(event) => debouncedResults(event.target.value)}
         placeholder="Start typing TV Show to search..."
       />
 
